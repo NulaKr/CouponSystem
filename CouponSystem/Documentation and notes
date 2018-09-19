@@ -1,0 +1,20 @@
+db_building package:
+Contain 2 classes:
+1. CreateDB - the Java code for derby DB creation with table creation
+2. AlterTable - Class I used to change the JOIN tables from primary key on both columns
+* I have moved all constraints from the JOIN tables as there is no point to have amount of coupons if they cannot be bought more them once
+As well as there is no point to get all coupons. I did look on how to create a constrain to the whole entry so each customer can buy specific coupon
+only once.
+
+Test classes:
+
+1. ViewDB - shows the different tables and the content - print it to the console only
+2. DAO tests:
+    2.1 CustomerDAOTests - Test for CuatomerDBDAO methods
+    2.2 CompanyDAOTests - Test for CompanyDBDAO methods
+    2.3 CouponDAOTests - Test for CouponDBDAO methods
+3. Facade tests:
+    3.1 Admin Facade
+    3.2 Company Facade
+    3.3 Customer Facade
+4. CouponSystem tests
