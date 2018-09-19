@@ -13,8 +13,9 @@ import java.sql.*;
 import java.util.HashSet;
 import java.util.Set;
 
-//TODO - All exceptions change to throw exception for CouponSysException
-
+/**
+ * @author hadar.kraus
+ */
 public class CompanyDBDAO implements CompanyDAO {
 
 
@@ -22,7 +23,6 @@ public class CompanyDBDAO implements CompanyDAO {
 
     {
 
-        //TODO - find a way to replace throw exception for the connection which is not CouponSystemException(DBConnectionException))
         try {
             pool = ConnectionPool.getInstance();
         } catch (CouponSystemException e) {
@@ -31,11 +31,22 @@ public class CompanyDBDAO implements CompanyDAO {
 
     }
 
+    /**
+     * Constructor
+     */
     public CompanyDBDAO() {
     }
 
+    /**
+     * Create ne conpany in DB
+     * @param company
+     * @return 1 for success
+     * @return -1 for failure
+     * @throws DBConnectionException
+     * @throws DaoException
+     */
     @Override
-    public void createCompany(Company company) throws DBConnectionException, DaoException {
+    public int createCompany(Company company) throws DBConnectionException, DaoException {
         Connection con = null;
         String createComp = "INSERT INTO Company (COMPNAME, PASSWORD, EMAIL) VALUES(?, ?, ?)";
         try {
@@ -49,11 +60,12 @@ public class CompanyDBDAO implements CompanyDAO {
             pstm.setString(2, company.getPassword());
             pstm.setString(3, company.getEmail());
             int createCompanyResults = pstm.executeUpdate();
-            System.out.println("created a company:");
-            System.out.println(company);
-
-            if(createCompanyResults ==0){
-                throw new DaoException("Did not Create company to DB");
+            if(createCompanyResults != 1){
+                return -1;
+            }else {
+                System.out.println("created a company:");
+                System.out.println(company);
+                return 1;
             }
                 } catch (SQLException e) {
             throw new DaoException("Error creating company", e);
@@ -62,8 +74,16 @@ public class CompanyDBDAO implements CompanyDAO {
         }
     }
 
+    /**
+     * Delete company
+     * @param company
+     * @return 1 for success
+     * @return -1 for failure
+     * @throws DBConnectionException
+     * @throws DaoException
+     */
     @Override
-    public void deleteCompany(Company company) throws DBConnectionException, DaoException {
+    public int deleteCompany(Company company) throws DBConnectionException, DaoException {
         Connection con = null;
         try {
             con = pool.getConnection();
@@ -77,10 +97,11 @@ public class CompanyDBDAO implements CompanyDAO {
             int deleted = stmt.executeUpdate(deleteComp);
 
             if (deleted == 0){
-                throw new DaoException("could not find company with the provided information");
+                return -1;
             } else {
                 System.out.println("Deleted " + deleted + "entry from database:");
                 System.out.println(company);
+                return 1;
             }
         } catch (SQLException e) {
             throw new DaoException("Error deleting company", e);
@@ -90,8 +111,16 @@ public class CompanyDBDAO implements CompanyDAO {
 
     }
 
+    /**
+     * update existing company
+     * @param company
+     * @return 1 for success
+     * @return -1 for failure
+     * @throws DBConnectionException
+     * @throws DaoException
+     */
     @Override
-    public void updateCompany(Company company) throws DBConnectionException, DaoException {
+    public int updateCompany(Company company) throws DBConnectionException, DaoException {
         Connection con = null;
         try {
             con = pool.getConnection();
@@ -109,20 +138,25 @@ public class CompanyDBDAO implements CompanyDAO {
             int numUpdated = pstm.executeUpdate();
 
             if(numUpdated ==0){
-                throw new DaoException("Could not find company");
-            }else if(numUpdated == 1){
+                return -1;
+            }else if(numUpdated == 1) {
                 System.out.println("One company updated");
-            } else {
-                System.out.println(numUpdated + "companies updated");
+                return 1;
             }
         } catch (SQLException e) {
             throw new DaoException("Error updating company", e);
         } finally {
             pool.returnConnection(con);
         }
-
+        return -1;
     }
 
+    /**
+     * Get ompany by ID
+     * @param companyId
+     * @returnCompany object
+     * @throws CouponSystemException
+     */
     @Override
     public Company getCompanyByID(long companyId) throws CouponSystemException {
 
@@ -153,6 +187,12 @@ public class CompanyDBDAO implements CompanyDAO {
         return company;
     }
 
+    /**
+     * Get company by name
+     * @param compName
+     * @return Company object
+     * @throws CouponSystemException
+     */
     public Company getCompanyByName (String compName) throws CouponSystemException{
 
         Connection con = null;
@@ -182,6 +222,12 @@ public class CompanyDBDAO implements CompanyDAO {
         return company;
     }
 
+    /**
+     * Get all companies (will be used by admin only)
+     * @return Set of companies
+     * @throws DBConnectionException
+     * @throws DaoException
+     */
     @Override
     public Set<Company> getAllCompanies() throws DBConnectionException, DaoException {
         Connection con = null;
@@ -213,6 +259,13 @@ public class CompanyDBDAO implements CompanyDAO {
         return companies;
     }
 
+    /**
+     * Get all coupons set by company
+     * @param compID
+     * @return Set of coupons
+     * @throws DBConnectionException
+     * @throws DaoException
+     */
     @Override
     public Set<Coupon> getCoupons(long compID) throws DBConnectionException, DaoException {
         Connection con = null;
@@ -245,6 +298,15 @@ public class CompanyDBDAO implements CompanyDAO {
         return coupons;
     }
 
+    /**
+     * Login for a company
+     * @param compName
+     * @param password
+     * @return True/False
+     * @throws DBConnectionException
+     * @throws DaoException
+     * @throws LoginException
+     */
     @Override
     public boolean login(String compName, String password) throws DBConnectionException, DaoException, LoginException {
 

@@ -2,28 +2,41 @@ package coupon.facade.Logic;
 
 import coupon.ClientType;
 import coupon.facade.*;
-import coupon.sys.beans.Company;
-import coupon.sys.beans.Customer;
 import coupon.sys.connection.pool.ConnectionPool;
 import coupon.sys.dao.CompanyDBDAO;
-import coupon.sys.dao.CouponDBDAO;
 import coupon.sys.dao.CustomerDBDAO;
 import coupon.sys.exceptions.CouponSystemException;
-import coupon.sys.exceptions.DBConnectionException;
-import coupon.sys.exceptions.DaoException;
 import coupon.sys.exceptions.LoginException;
 
+/**
+ * @author hadar.kraus
+ */
 public class CouponSystem {
 
-    // Create instances of DBDAO objects and create the daily thread
-    DailyCouponExpirationTask daily = new DailyCouponExpirationTask();
-    Thread dailyThread = new Thread(daily, "dailyTread");
-    CouponDBDAO couponDBDAO = new CouponDBDAO();
-    CompanyDBDAO companyDBDAO = new CompanyDBDAO();
-    CustomerDBDAO customerDBDAO = new CustomerDBDAO();
+    // Create the daily thread
+    private DailyCouponExpirationTask daily = new DailyCouponExpirationTask();
+    private Thread dailyThread = new Thread(daily, "dailyTread");
+
+
+    private ConnectionPool pool;
+
+    {
+
+
+        try {
+            pool = ConnectionPool.getInstance();
+        } catch (CouponSystemException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     private static CouponSystem ourInstance = new CouponSystem();
 
+    /**
+    * Create single instance
+     **/
     public static CouponSystem getInstance() {
         return ourInstance;
     }
@@ -33,6 +46,10 @@ public class CouponSystem {
 
     }
 
+    /**
+    Login method for all client types. Uses the login method of the Facade classes according to the client type (switch case)
+    Required parameters - Username (String), Password (String), ClientType (ClientType ENUM)
+     **/
     public CouponClientFacade login(String username, String password, ClientType clientType) throws LoginException {
         CompanyDBDAO companyDBDAO = new CompanyDBDAO();
         CustomerDBDAO customerDBDAO = new CustomerDBDAO();
@@ -57,5 +74,17 @@ public class CouponSystem {
         }
 
         throw new LoginException("Client type didn't match");
+    }
+
+    /**
+    Will shut down the system - Close the cleanup thread and return all connections
+     **/
+    public void shutdown(){
+        try {
+            daily.stopTask();
+            pool.closeAllConnections();
+        } catch (CouponSystemException e) {
+            e.printStackTrace();
+        }
     }
 }

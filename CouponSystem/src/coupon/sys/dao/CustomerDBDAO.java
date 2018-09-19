@@ -31,11 +31,18 @@ public class CustomerDBDAO implements CustomerDAO {
         }
     }
 
-    //CTOR
+    /**
+     * Constructor
+     */
     public CustomerDBDAO() {
     }
 
-
+    /**
+     * Create new customer
+     * @param customer
+     * @throws DBConnectionException
+     * @throws DaoException
+     */
     @Override
     public void createCustomer(Customer customer) throws DBConnectionException, DaoException {
         Connection con = null;
@@ -70,6 +77,12 @@ public class CustomerDBDAO implements CustomerDAO {
         }
     }
 
+    /**
+     *
+     * @param customer
+     * @throws DBConnectionException
+     * @throws DaoException
+     */
     @Override
     public void removeCustomer(Customer customer) throws DBConnectionException, DaoException {
 
@@ -101,6 +114,12 @@ public class CustomerDBDAO implements CustomerDAO {
 
     }
 
+    /**
+     * Update existing customer
+     * @param customer
+     * @throws DBConnectionException
+     * @throws DaoException
+     */
     @Override
     public void updateCustomer(Customer customer) throws DBConnectionException, DaoException {
 
@@ -133,6 +152,13 @@ public class CustomerDBDAO implements CustomerDAO {
         }
     }
 
+    /**
+     * Get customer by ID
+     * @param customerId
+     * @return Customer object
+     * @throws DBConnectionException
+     * @throws DaoException
+     */
     @Override
     public Customer getCustomerByID(long customerId) throws DBConnectionException, DaoException {
 
@@ -162,6 +188,13 @@ public class CustomerDBDAO implements CustomerDAO {
         return customer;
     }
 
+    /**
+     * Get customer by name
+     * @param customerName
+     * @return customer object
+     * @throws DBConnectionException
+     * @throws DaoException
+     */
     public Customer getCustomerByName(String customerName) throws DBConnectionException, DaoException {
         Customer customer = null;
         String getCust = "SELECT * from customer WHERE CUST_NAME='" + customerName +"'";
@@ -189,6 +222,12 @@ public class CustomerDBDAO implements CustomerDAO {
         return customer;
     }
 
+    /**
+     * Get all customers (to be used by admin only)
+     * @return Set of customer objects
+     * @throws DBConnectionException
+     * @throws DaoException
+     */
     @Override
     public Set<Customer> getAllCustomers() throws DBConnectionException, DaoException {
 
@@ -221,6 +260,13 @@ public class CustomerDBDAO implements CustomerDAO {
         return customers;
     }
 
+    /**
+     * Get coupons per customer
+     * @param customerId
+     * @return Set of coupon objects
+     * @throws DBConnectionException
+     * @throws DaoException
+     */
     @Override
     public Set<Coupon> getCoupons(long customerId) throws DBConnectionException, DaoException {
 
@@ -255,6 +301,14 @@ public class CustomerDBDAO implements CustomerDAO {
 
     }
 
+    /**
+     * Login for customer
+     * @param custName
+     * @param password
+     * @return True/False
+     * @throws DBConnectionException
+     * @throws LoginException
+     */
     @Override
     public boolean login(String custName, String password) throws DBConnectionException, LoginException {
         Connection con = null;

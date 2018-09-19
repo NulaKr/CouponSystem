@@ -11,9 +11,9 @@ import java.util.Set;
 
 public interface CompanyDAO {
 
-    void createCompany(Company company) throws DBConnectionException, DaoException;
-    void deleteCompany(Company company) throws DBConnectionException, DaoException;
-    void updateCompany(Company company) throws DBConnectionException, DaoException;
+    int createCompany(Company company) throws DBConnectionException, DaoException;
+    int deleteCompany(Company company) throws DBConnectionException, DaoException;
+    int updateCompany(Company company) throws DBConnectionException, DaoException;
 
     Company getCompanyByID(long compID) throws CouponSystemException;
     Set<Company> getAllCompanies() throws DBConnectionException, DaoException;

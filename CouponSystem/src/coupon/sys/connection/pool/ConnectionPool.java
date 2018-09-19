@@ -22,7 +22,7 @@ public class ConnectionPool {
     private static ConnectionPool ourInstance;
 
     static {
-        // As this is not a method cannot throw my own exception and will print the stackTrace for error handling
+
         try {
             ourInstance = new ConnectionPool();
         } catch (CouponSystemException e) {
@@ -57,7 +57,9 @@ public class ConnectionPool {
         }
     }
 
-    // Get a single connection from the connection pool in order to run a query or update to the DB
+    /*
+     Get a single connection from the connection pool in order to run a query or update to the DB
+      */
     public synchronized Connection getConnection() throws DBConnectionException {
 
         // If there are no available connections the thread will have to wait
@@ -76,13 +78,17 @@ public class ConnectionPool {
         return con;
     }
 
-    // When the use of the connection is done - return it to the collection
+    /*
+     When the use of the connection is done - return it to the collection
+      */
     public synchronized void returnConnection(Connection con){
         connections.add(con);
         notifyAll();
     }
 
-    // close all open connection. In case there is a need to manually close it without the need to close the application
+    /*
+     close all open connection. In case there is a need to manually close it without the need to close the application
+      */
     public synchronized void closeAllConnections() throws DBConnectionException {
         //can be done much better - only example!!!!
 

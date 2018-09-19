@@ -17,6 +17,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+/**
+ * @author hadar.kraus
+ */
 public class CompanyFacade implements CouponClientFacade {
 
 
@@ -24,16 +27,26 @@ public class CompanyFacade implements CouponClientFacade {
     CompanyDBDAO companyDBDAO = new CompanyDBDAO();
     CouponDBDAO couponDBDAO = new CouponDBDAO();
     Company company;
-
+    /**
+     * Constractor
+     **/
     public CompanyFacade(Company company) {
         this.company = company;
     }
 
+    /**
+     * @return Company object related to CompanyFacade object
+     **/
     public Company getCompany() {
         return company;
     }
 
-    // Create new coupon. return 1 if successful
+    /**
+     * Create new coupon For the company.
+     * @param coupon Coupon object
+     * @return 1 if coupon created
+     * @return -1 if already exit
+     **/
     public int createCoupon(Coupon coupon) throws CouponSystemException {
 
         Set<Coupon> coupons = companyDBDAO.getCoupons(this.company.getId());
@@ -44,7 +57,7 @@ public class CompanyFacade implements CouponClientFacade {
             Coupon existingCoupon = (Coupon)it.next();
 
             if (existingCoupon.getTitle().equals(coupon.getTitle())){
-                throw new CouponSystemException("Coupon already exist");
+                return -1;
             }
         }
 
@@ -52,10 +65,15 @@ public class CompanyFacade implements CouponClientFacade {
         return 1;
     }
 
-    // Remove coupon from DB. if for any reason the coupon provided was not created correctly it will return 0. Successfull update will return 1.
+    /**
+     * Remove coupon from DB.
+     * @param coupon Coupon object
+     * @return 1 if coupon was removed
+     * @return -1 for errors
+     **/
     public int removeCoupon(Coupon coupon) {
         if (coupon == null){
-            return 0;
+            return -1;
         }
 
         try {
@@ -68,9 +86,15 @@ public class CompanyFacade implements CouponClientFacade {
         } catch (DaoException e) {
             e.getMessage();
         }
-        return 0;
+        return -1;
     }
 
+    /**
+     * Update existing coupon.
+     * @param coupon Coupon object
+     * @return 1 for successful update
+     * @return -1 for errors
+     **/
     public int updateCoupon(Coupon coupon) throws DaoException {
         if (coupon == null){
             throw new DaoException("Some information is missing. Cannot update coupon");
@@ -82,9 +106,14 @@ public class CompanyFacade implements CouponClientFacade {
         } catch (DBConnectionException e) {
             e.printStackTrace();
         }
-        return 0;
+        return -1;
     }
 
+    /**
+     * Return coupon object by ID.
+     * @param couponId long
+     * @return Coupon object
+     **/
     public Coupon getCouponByID (long couponId) throws DaoException {
 
         Coupon coupon = null;
@@ -100,6 +129,9 @@ public class CompanyFacade implements CouponClientFacade {
         return coupon;
     }
 
+    /**
+     * @Return a Set of all coupons related to company.
+     **/
     public Set<Coupon> getAllCoupons() throws DaoException {
 
         Set<Coupon> coupons = null;
@@ -117,6 +149,9 @@ public class CompanyFacade implements CouponClientFacade {
         return coupons;
     }
 
+    /**
+     * @Return a Set of coupons related to the company with a specific type.
+     **/
     public Set<Coupon> getCouponByType(CouponType couponType) throws DaoException {
 
         Set<Coupon> AllCoupons= new HashSet<>();
@@ -146,6 +181,9 @@ public class CompanyFacade implements CouponClientFacade {
         return couponByType;
     }
 
+    /**
+     * @Return a Set of coupons related to the company with a specific price.
+     **/
     public Set<Coupon> getCouponByPrice(double couponPrice) throws CouponSystemException {
 
         Set<Coupon> couponsByPrice = new HashSet<>();
@@ -172,6 +210,9 @@ public class CompanyFacade implements CouponClientFacade {
         return couponsByPrice;
     }
 
+    /**
+     * @Return a Set of coupons related to the company with a specific expiration date
+     **/
     public Set<Coupon> getCouponByTime (Date endDate) throws CouponSystemException {
 
         Set<Coupon> couponsByTime = new HashSet<>();
@@ -200,6 +241,12 @@ public class CompanyFacade implements CouponClientFacade {
         return couponsByTime;
     }
 
+    /**
+     * Login method for companies.
+     * @param compName Company name - String
+     * @param password - String
+     * @return CompanyFacade object with the relevant access to a company methods
+    **/
     public static CompanyFacade companyLogin(String compName, String password) throws LoginException {
         CompanyDBDAO companyDBDAO= new CompanyDBDAO();
         try {

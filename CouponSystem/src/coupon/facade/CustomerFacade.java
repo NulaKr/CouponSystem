@@ -17,20 +17,38 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+/**
+ * @author hadar.kraus
+ */
 public class CustomerFacade implements CouponClientFacade {
 
     CustomerDBDAO customerDBDAO = new CustomerDBDAO();
     CouponDBDAO couponDBDAO = new CouponDBDAO();
     Customer customer;
 
+    /**
+     * Constructor
+     * @param customer
+     */
     public CustomerFacade(Customer customer) {
         this.customer = customer;
     }
 
+    /**
+     * Get customer related to the CustomerFacade object
+     * @return Customer object
+     */
     public Customer getCustomer(){
         return customer;
     }
 
+    /**
+     *
+     * @param coupon Coupon object
+     * @return 1 For success
+     * @return -1 for error
+     * @throws CouponSystemException
+     */
     public int purchaseCoupon(Coupon coupon) throws CouponSystemException {
         Customer customer = this.customer;
 
@@ -63,9 +81,14 @@ public class CustomerFacade implements CouponClientFacade {
         } catch (DaoException e) {
             e.printStackTrace();
         }
-        return 0;
+        return -1;
     }
 
+    /**
+     * Get all coupons for the customer
+     * @return Set of coupons bought by the customer
+     * @throws DaoException
+     */
     public Set<Coupon> getAllPurchasedCoupons() throws DaoException {
 
         Set<Coupon> coupons = null;
@@ -82,6 +105,12 @@ public class CustomerFacade implements CouponClientFacade {
         return coupons;
     }
 
+    /**
+     * Get all coupon bought by user of a specific type
+     * @param couponType CouponType - Enum
+     * @return Set of coupons
+     * @throws DaoException
+     */
     public Set<Coupon> getAllCouponsByTypeHistorically(CouponType couponType) throws DaoException {
         Set<Coupon> allPurchased = getAllPurchasedCoupons();
         Set<Coupon> allPurchasedByType = new HashSet<>();
@@ -100,6 +129,12 @@ public class CustomerFacade implements CouponClientFacade {
         return allPurchasedByType;
     }
 
+    /**
+     * Return a Set of coupons bought by the facade's relevant customer.
+     * @param couponPrice requested price - double
+     * @return Set of coupon of a specific price
+     * @throws DaoException
+     */
     public Set<Coupon> getAllCouponsByPriceHistorically(double couponPrice) throws DaoException {
 
         Set<Coupon> allPurchased = getAllPurchasedCoupons();
@@ -119,6 +154,12 @@ public class CustomerFacade implements CouponClientFacade {
         return allPurchasedByPrice;
     }
 
+    /**
+     * Login method for customers.
+     * @param username Customer's username - String
+     * @param password - String
+     * @return CustomerFacade object with the relevant access to a customer methods
+     **/
     public static CustomerFacade customerLogin(String username, String password) throws LoginException {
         CustomerDBDAO customerDBDAO = new CustomerDBDAO();
         try {

@@ -9,7 +9,10 @@ import coupon.sys.exceptions.DaoException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Set;
-
+    /**
+    Thread to remove expired coupons from the DB. Run at the coupon system start and then every 24 hours
+     @author hadar.kraus
+     **/
 public class DailyCouponExpirationTask implements Runnable {
 
     CouponDBDAO couponDBDAO = new CouponDBDAO();

@@ -12,9 +12,11 @@ import coupon.sys.exceptions.DaoException;
 
 import java.sql.*;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
+/**
+ * @author hadar.kraus
+ */
 public class CouponDBDAO implements CouponDAO {
 
 //    CouponDBDAO couponDBDAO = new CouponDBDAO();
@@ -31,6 +33,13 @@ public class CouponDBDAO implements CouponDAO {
         }
     }
 
+    /**
+     * Create new coupon by company
+     * @param coupon
+     * @param company
+     * @throws DaoException
+     * @throws DBConnectionException
+     */
     @Override
     public void createCoupon(Coupon coupon, Company company) throws DaoException, DBConnectionException {
 
@@ -91,6 +100,12 @@ public class CouponDBDAO implements CouponDAO {
 
     }
 
+    /**
+     * Remove existing coupon
+     * @param coupon
+     * @throws DBConnectionException
+     * @throws DaoException
+     */
     @Override
     public void removeCoupon(Coupon coupon) throws DBConnectionException, DaoException {
 
@@ -134,6 +149,12 @@ public class CouponDBDAO implements CouponDAO {
 
     }
 
+    /**
+     * Update existing coupon
+     * @param coupon
+     * @throws DBConnectionException
+     * @throws DaoException
+     */
     @Override
     public void updateCoupon(Coupon coupon) throws DBConnectionException, DaoException {
         Connection con = null;
@@ -168,6 +189,12 @@ public class CouponDBDAO implements CouponDAO {
         }
     }
 
+    /**
+     * Get coupon by ID
+     * @param couponId
+     * @return Coupn objec
+     * @throws CouponSystemException
+     */
     @Override
     public Coupon getCouponByID(long couponId) throws CouponSystemException {
 
@@ -198,6 +225,12 @@ public class CouponDBDAO implements CouponDAO {
         }
     }
 
+    /**
+     * Get coupon by title
+     * @param title
+     * @return coupon object
+     * @throws CouponSystemException
+     */
     @Override
     public Coupon getCouponByTitle(String title) throws CouponSystemException {
         Connection con = null;
@@ -227,6 +260,13 @@ public class CouponDBDAO implements CouponDAO {
         }
     }
 
+    /**
+     * get coupon by type
+     * @param type
+     * @return coupon object
+     * @throws DBConnectionException
+     * @throws DaoException
+     */
     @Override
     public Set<Coupon> getCouponByType (CouponType type) throws DBConnectionException, DaoException {
 
@@ -259,6 +299,12 @@ public class CouponDBDAO implements CouponDAO {
         return couponsByType;
     }
 
+    /**
+     * Get all coupons
+     * @return Set of coupon objects
+     * @throws DBConnectionException
+     * @throws DaoException
+     */
     @Override
     public Set<Coupon> getAllCoupons () throws DBConnectionException, DaoException {
 
@@ -288,6 +334,11 @@ public class CouponDBDAO implements CouponDAO {
         return coupons;
     }
 
+    /**
+     * Reduce amount of available coupons
+     * @param coupon
+     * @throws CouponSystemException
+     */
     @Override
     public void reduceAmount(Coupon coupon) throws CouponSystemException {
 
@@ -321,6 +372,13 @@ public class CouponDBDAO implements CouponDAO {
         }
     }
 
+    /**
+     * Purches coupon by customer
+     * @param coupon
+     * @param customer
+     * @throws DBConnectionException
+     * @throws DaoException
+     */
     @Override
     public void purchaseCoupon(Coupon coupon, Customer customer) throws DBConnectionException, DaoException {
         Connection con = null;

@@ -14,6 +14,10 @@ import coupon.sys.exceptions.LoginException;
 import java.util.Iterator;
 import java.util.Set;
 
+/**
+ * Class that indicate the logged in user and provide access to relevant methods for a specific admin
+ * @author hadar.kraus
+ */
 public class AdminFacade implements CouponClientFacade{
 
 
@@ -28,10 +32,12 @@ public class AdminFacade implements CouponClientFacade{
     public AdminFacade() {
     }
 
-    /*
-            Adding a new company to DB. If the Company name already exist the company will not be created and will throw a DAO exception
-            The method is returning 1 in case of successful update
-        */
+        /**
+         * Adding a new company to DB.
+         * @param company Company object
+         * @return 1 for successful update
+         * @return -1 for an error
+        **/
     public int addCompany(Company company) throws DBConnectionException, DaoException {
 
         Set<Company> companies;
@@ -43,7 +49,7 @@ public class AdminFacade implements CouponClientFacade{
                 while (it.hasNext()){
                     Company existingCompany = (Company)it.next();
                     if (existingCompany.getCompName().equals(company.getCompName())){
-                        throw new DaoException("Company name already exist");
+                        return -1;
                     }
                 }
 
@@ -61,9 +67,12 @@ public class AdminFacade implements CouponClientFacade{
          }
     }
 
-    /*
-        Updating existing company in DB. The method will return 1 if the entry was updated or 0 if not found or DB is empty
-     */
+    /**
+     * Updating existing company in DB.
+     * @param company Company object
+     * @return 1 for successful update
+     * @return -1 for error
+     **/
     public int updateCompany(Company company) throws DaoException {
 
         if (company == null){
@@ -71,16 +80,19 @@ public class AdminFacade implements CouponClientFacade{
         }
         try {
             companyDBDAO.updateCompany(company);
+            return 1;
         } catch (DBConnectionException e) {
             e.getMessage();
-            return 0;
         }
-        return 1;
+        return -1;
     }
 
-    /*
-        Removing company from the DB. The method will return 1 if the company was removed and 0 if the company not found or DB is empty
-     */
+    /**
+     * Removing company and it's coupons from the DB.
+     * @param company Company object
+     * @return 1 if company was removed
+     * @return -1 for errors
+     **/
     public int removeCompany(Company company) throws DaoException {
 
         if (company == null) {
@@ -93,19 +105,20 @@ public class AdminFacade implements CouponClientFacade{
             while (it.hasNext()){
                 Coupon coupon = (Coupon)it.next();
                 couponDBDAO.removeCoupon(coupon);
+                return 1;
             }
             companyDBDAO.deleteCompany(company);
         } catch (DBConnectionException e) {
             e.printStackTrace();
-            return 0;
         }
-        return 1;
+        return -1;
     }
 
-    /*
-    Getting a single company entry from DB by ID. most of the exceptions are thrown
-    by the used method from the DBDAO method but is case of edge case not handled and the company is null this method will throw DAOException
-     */
+    /**
+     * Getting a single company entry from DB by ID.
+     * @param companyId long
+     * @return Company object
+     **/
     public Company getCompanyByID(long companyId) throws CouponSystemException {
 
         Company company = null;
@@ -117,10 +130,11 @@ public class AdminFacade implements CouponClientFacade{
         return company;
     }
 
-    /*
-  Getting a single company entry from DB by name. most of the exceptions are thrown
-  by the used method from the DBDAO method but is case of edge case not handled and the company is null this method will throw DAOException
-   */
+    /**
+     * Getting a single company entry from DB by name.
+     * @param name String
+     * @return Company object
+   **/
     public Company getCompanyByName(String name) throws CouponSystemException {
         Company company = null;
         company = companyDBDAO.getCompanyByName(name);
@@ -131,10 +145,10 @@ public class AdminFacade implements CouponClientFacade{
         return company;
     }
 
-    /*
-        Getting all company entries from DB by name. most of the exceptions are thrown
-        by the used method from the DBDAO method but is case of edge case not handled and the company is null this method will throw DAOException
-     */
+    /**
+     * Getting all company entries from DB by name.
+     * @return Set of companies
+     **/
     public Set<Company> getAllCompanies () throws DBConnectionException, DaoException {
         Set<Company> companies;
         companies = companyDBDAO.getAllCompanies();
@@ -144,10 +158,12 @@ public class AdminFacade implements CouponClientFacade{
         return companies;
     }
 
-    /*
-    Adding a new customer to DB. If the Customer name already exist the Customer will not be created and will throw a DAO exception
-    The method is returning 1 in case of successful update
-    */
+    /**
+    * Adding a new customer to DB.
+     * @param customer Customer object
+     * @return 1 if customer was added
+     * @return -1 for errors
+     **/
     public int addCustomer(Customer customer) throws DaoException, DBConnectionException {
 
         Set<Customer> customers;
@@ -160,29 +176,30 @@ public class AdminFacade implements CouponClientFacade{
                     Customer cust = (Customer)it.next();
 
                     if (cust.getCustName().equals(customer.getCustName())){
-                        throw new DaoException("Customer already exist");
+                        return -1;
                     }
                 }
             } catch (DBConnectionException e) {
                 e.getMessage();
-                return 0;
             } catch (DaoException e) {
                 e.getMessage();
-                return 0;
             }
         }
 
         if (customer == null) {
-            throw new DaoException("Some information is missing");
+            return -1;
         } else {
             customerDBDAO.createCustomer(customer);
             return 1;
         }
     }
 
-    /*
-        Removing customer from the DB. The method will return 1 if the company was removed and 0 if the customer not found or DB is empty
-     */
+    /**
+     * Removing customer from the DB.
+     * @param customer Customer object
+     * @return 1 if customer was removed
+     * @return -1 for errors
+     **/
     public int removeCustomer (Customer customer) {
 
         // make sure that the customer exist
@@ -207,18 +224,19 @@ public class AdminFacade implements CouponClientFacade{
                 }
             } catch (DBConnectionException e) {
                 e.getMessage();
-                return 0;
             } catch (DaoException e) {
                 e.getMessage();
-                return 0;
             }
         }
-        return 0;
+        return -1;
     }
 
-    /*
-        Updating existing customer in DB. The method will return 1 if the entry was updated or 0 if not found or DB is empty
-     */
+    /**
+     * Updating existing customer in DB.
+     * @param customer Customer object
+     * @return 1 for successful update
+     * @return -1 for errors
+     **/
     public int updateCustomer (Customer customer) throws DaoException {
 
         if (customer == null){
@@ -229,14 +247,16 @@ public class AdminFacade implements CouponClientFacade{
                 return 1;
             } catch (DBConnectionException e) {
                 e.printStackTrace();
-                return 0;
             }
         }
+        return -1;
     }
 
-    /*
-        Get customer by ID. if customer is null (not found) will throw exception
-     */
+    /**
+     * Get customer by ID.
+     * @param customerId long
+     * @return Customer object
+     **/
     public Customer getCustomerByID (long customerId) throws DaoException {
 
         Customer customer = null;
@@ -251,9 +271,11 @@ public class AdminFacade implements CouponClientFacade{
         }
         return customer;
     }
-    /*
-        Get customer by name
-     */
+    /**
+     * Get customer by name.
+     * @param customerName String
+     * @return Customer object
+     **/
     public Customer getCustomerByName (String customerName) throws DaoException {
 
         Customer cust = null;
@@ -269,6 +291,10 @@ public class AdminFacade implements CouponClientFacade{
         return cust;
     }
 
+    /**
+     * Get all customers from the DB.
+     * @return Set of all customers in DB
+     **/
     public Set<Customer> getAllCustomers() throws DBConnectionException, DaoException {
         Set<Customer> customers = null;
 
@@ -281,6 +307,12 @@ public class AdminFacade implements CouponClientFacade{
         return customers;
     }
 
+    /**
+     * Login method for admins.
+     * @param username String
+     * @param password String
+     * @return Admin Facade
+     **/
     public static AdminFacade login(String username, String password) throws LoginException {
         if(username.equals("Admin") && password.equals("1234")){
             System.out.println("you are connected");
