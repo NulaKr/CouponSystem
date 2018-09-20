@@ -1,0 +1,9 @@
+Tests
+coupon
+coupon.facade
+coupon.facade.Logic
+coupon.sys.beans
+coupon.sys.connection.pool
+coupon.sys.dao
+coupon.sys.exceptions
+db_building
