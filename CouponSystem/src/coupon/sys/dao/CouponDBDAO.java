@@ -86,7 +86,7 @@ public class CouponDBDAO implements CouponDAO {
                 pstm2.setLong(1, company.getId());
                 pstm2.setLong(2, id);
                 int result2 = pstm2.executeUpdate();
-                System.out.println(result2);
+                // If there was any issue with adding the Coupon to the joined table remove the coupon from all and throw exception
                 if (result2 == 0) {
                     this.removeCoupon(coupon);
                     throw new DaoException("Error while adding coupon");

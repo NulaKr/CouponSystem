@@ -6,6 +6,10 @@ Contain 2 classes:
 As well as there is no point to get all coupons. I did look on how to create a constrain to the whole entry so each customer can buy specific coupon
 only once.
 
+DBDAO classes - Notes
+I have set the creation/update/delete methods in Customer and Company classes to return int so there is some answer to use when there is no success
+In the Coupon Class I didn't do that as it is not a must and there I will need to use the exception in case of an error
+
 Test classes:
 
 1. ViewDB - shows the different tables and the content - print it to the console only
